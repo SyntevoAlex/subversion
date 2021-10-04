@@ -368,7 +368,7 @@ class WinGeneratorBase(gen_win_dependencies.GenDependenciesBase):
           cbuild = ("%s -g -Xlint -Xlint:-options %s %s "
                     " -target 1.8 -source 1.8 -classpath "
                     " %s -d %s "
-                    " -sourcepath %s $(InputPath)") \
+                    " -sourcepath %s \"$(InputPath)\"") \
                    % (self.quote(javac_exe), per_project_flags, headers,
                       self.quote(classes), self.quote(targetdir),
                       self.quote(sourcepath))
@@ -436,8 +436,8 @@ class WinGeneratorBase(gen_win_dependencies.GenDependenciesBase):
                   user_deps.append(isrc)
                   continue
 
-                cbuild = '%s %s -o %s $(InputPath)' \
-                         % (self.swig_exe, " ".join(swig_options), cout)
+                cbuild = '%s %s -o %s \"$(InputPath)\"' \
+                         % (self.quote(self.swig_exe), " ".join(swig_options), self.quote(cout))
 
                 cdesc = 'Generating %s' % cout
 
@@ -456,7 +456,7 @@ class WinGeneratorBase(gen_win_dependencies.GenDependenciesBase):
       for header in target.msvc_export:
         deps.append(self.path('subversion/include', header))
 
-      cbuild = "%s $(InputPath) %s > %s" \
+      cbuild = "%s \"$(InputPath)\" %s > %s" \
                % (self.quote(sys.executable), " ".join(deps), def_file)
 
       cdesc = 'Generating %s ' % def_file
