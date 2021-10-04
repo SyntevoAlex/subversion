@@ -1344,7 +1344,7 @@ class GenDependenciesBase(gen_base.GeneratorBase):
       lib_name = 'serf-%d.lib' % (serf_ver_maj,)
     else:
       lib_name = 'serf.lib'
-    
+
     if self.shared_serf:
       lib_name = 'lib' + lib_name
 
@@ -1356,7 +1356,7 @@ class GenDependenciesBase(gen_base.GeneratorBase):
                                                 defines=defines)
 
   def _find_sasl(self, show_warnings):
-    "Check if sals is available"
+    "Check if sasl is available"
 
     minimal_sasl_version = (2, 0, 0)
 
@@ -1365,9 +1365,13 @@ class GenDependenciesBase(gen_base.GeneratorBase):
 
     inc_dir = os.path.join(self.sasl_path, 'include')
 
-    version_file_path = os.path.join(inc_dir, 'sasl.h')
-
-    if not os.path.isfile(version_file_path):
+    defines=['SVN_HAVE_SASL']
+    if     os.path.isfile(os.path.join(inc_dir, 'sasl', 'sasl.h')):
+      version_file_path = os.path.join(inc_dir, 'sasl', 'sasl.h')
+      defines.append('SVN_HAVE_SASL_INSTALLED')
+    elif   os.path.isfile(os.path.join(inc_dir, 'sasl.h')):
+      version_file_path = os.path.join(inc_dir, 'sasl.h')
+    else:
       if show_warnings:
         print('WARNING: \'%s\' not found' % (version_file_path,))
         print("Use '--with-sasl' to configure sasl location.");
@@ -1411,7 +1415,7 @@ class GenDependenciesBase(gen_base.GeneratorBase):
                                                'libsasl.lib', sasl_version,
                                                dll_dir=dll_dir,
                                                dll_name=dll_name,
-                                               defines=['SVN_HAVE_SASL'])
+                                               defines=defines)
 
   def _find_libintl(self, show_warnings):
     "Find gettext support"
